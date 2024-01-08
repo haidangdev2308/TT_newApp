@@ -8,6 +8,14 @@ class Header extends Component {
     state = { 
         count: 3
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        // Kiểm tra nếu giá trị của prop "value" không thay đổi, không cần render lại
+        if (this.props.userName === nextProps.value) {
+          return false;
+        }
+        // Nếu giá trị thay đổi, cho phép render lại component
+        return true;
+    }
     render() { 
         return ( 
             <View>
