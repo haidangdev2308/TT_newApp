@@ -7,24 +7,25 @@ class Item extends Component {
     }
 
     shouldComponentUpdate(nextProps) { 
-        console.log(11111111111);
-        if (nextProps.selectedId !== this.props.selectedId) { 
-          return true; 
-        } else { 
-          return false; 
-        } 
+        if((nextProps.isActive !== this.props.isActive) ){
+            return true
+        }
+        else {
+            return false; 
+        }
     } 
 
-    
+    test = () => {
+        console.log("hai dang");
+    }
     
     render() {
-        const { item, backgroundColor, onPress, color } = this.props
+
+        const { item, backgroundColor, onPress, color, isActive } = this.props
         console.log(`render ra item ${item.id}`)
         return (
             <TouchableOpacity onPress={onPress} style={[styles.itemBox, { backgroundColor }]}>
                 <Text style={[styles.itemTitle, { color }]}>{item.title}</Text>
-                <Button>add</Button>
-                <Text></Text>
             </TouchableOpacity>
         );
     }

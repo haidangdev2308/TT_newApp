@@ -14,19 +14,30 @@ import {
   Button
 } from 'react-native';
 import data from './data'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
 
 class App extends Component {
-  state = {
-    userName: '',
-    mail: '',
-    selectedId: false,
-    refreshing: false,
-    data: [],
-    page: 1,           // Trang hiện tại
-    pageSize: 10,       // Số lượng mục trên mỗi trang
-    loadingMore: false, // Trạng thái đang load thêm
-    value: 0
+  constructor(props) {
+    super(props);
+    this.state = {
+      userName: '',
+      mail: '',
+      selectedId: false,
+      refreshing: false,
+      data: [],
+      page: 1,           // Trang hiện tại
+      pageSize: 10,       // Số lượng mục trên mỗi trang
+      loadingMore: false, // Trạng thái đang load thêm
+    }
+    this.appref = React.createRef()
   }
+
+  handleButtonPress = () => {
+    // Sử dụng ref để truy cập giá trị của TextInput
+    console.log(this.appref.props.backgroundColor);
+    debugger
+  };
 
   usernameInput = (text) => {
     this.setState((prevState) => {
@@ -46,16 +57,16 @@ class App extends Component {
     const { page, pageSize } = this.state;
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    
+
     // Lấy chỉ mục từ startIndex đến endIndex (10 mục đầu tiên ban đầu)
     const initialData = data.slice(startIndex, endIndex);
-    
+
     this.setState({
       data: initialData // Thêm dữ liệu mới vào danh sách hiện tại
     });
   }
 
-  
+
 
   componentDidMount() {
     this.getData()
@@ -96,35 +107,31 @@ class App extends Component {
     }
   };
 
-  
+
   render() {
 
     const { mail, selectedId, data, refreshing } = this.state;
-    // console.log('render');
-    
-    
 
-    const renderItem = ({item}) => {
+    const renderItem = ({ item }) => {
       const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
       const color = item.id === selectedId ? 'white' : 'black';
-  
+      const isActive = item.id === selectedId ? true : false
+
       return (
         <Item
+          ref={(ref) => this.appref = ref}
           item={item}
-          // onPress={() => this.setState({selectedId: item.id})}
           onPress={() => {
-            this.setState({
-                value: this.state.value + 1
-            })
+            this.setState({ selectedId: item.id })
           }}
           backgroundColor={backgroundColor}
           color={color}
           selectedId={selectedId}
-          value={this.state.value}
+          isActive={isActive}
         />
       );
     };
-    
+
 
     return (
       <View style={styles.container}>
@@ -138,15 +145,26 @@ class App extends Component {
               value={this.state.userName}
             />
             <TextInput style={styles.infoInput}
-              placeholder="Nhập họ của bạn"
+              placeholder="Nhập giá trị"
+              ref={(ref) => {
+                this.myInputRef = ref;
+              }}
               onChangeText={(text) => {
                 this.setState({
                   mail: text
                 })
               }}
               value={mail} />
+            <Button title="Lấy giá trị" style={styles.buttonRef} onPress={this.handleButtonPress} />
           </View>
-          <View style={{ flex: 1}}>
+          <View style={styles.icon}>
+            <AntDesign name='windows' style={{ fontSize: 30, color: 'red' }} />
+            <AntDesign name='facebook-square' style={{ fontSize: 30, color: 'red' }} />
+            <AntDesign name='google' style={{ fontSize: 30, color: 'red' }} />
+            <AntDesign name='twitter' style={{ fontSize: 30, color: 'red' }} />
+            <Entypo name='instagram-with-circle' style={{ fontSize: 30, color: 'red' }} />
+          </View>
+          <View style={{ flex: 1 }}>
             <FlatList
               data={data}
               refreshControl={ //pull refreshing set selectedId lại từ đầu
@@ -170,18 +188,15 @@ class App extends Component {
 }
 
 const styles = StyleSheet.create({
-  container:{ 
-    flex : 1
+  container: {
+    flex: 1,
   },
   flatList: {
     flex: 1,
-    height : 100,
-    backgroundColor : 'red'
   },
   bodyApp: {
-    flex : 1,
+    flex: 1,
     padding: 10,
-    // backgroundColor : 'red'
   },
   userBoard: {
     borderRadius: 4,
@@ -189,13 +204,21 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     marginTop: 15,
     flexDirection: 'column',
-    marginBottom: 50
+  },
+  icon: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginBottom: 50,
+    marginTop: 15
   },
   infoInput: {
     borderRadius: 4,
     borderColor: 'black',
     borderWidth: 2,
     padding: 10
+  },
+  buttonRef: {
+    color: 'red'
   },
   buttonSubmit: {
     alignSelf: 'center',
